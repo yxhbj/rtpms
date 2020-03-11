@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="img/favicon.png" type="image/png">
+    <title>放疗数据管理</title>
+    <style type="text/css">
+        .title {
+          width:300px;
+          text-align:center;
+          font-size:24px;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          margin-top:-200px;
+          margin-left: -150px;
+        }       
+        .box{
+          display:flex;
+          width: 400px;
+          height: 100px;
+          border:1px solid #ccc;
+          border-radius:5px;
+          justify-content: space-between;
+          background: white;
+          align-items: center;
+          padding: 5px;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          margin-top:-100px;
+          margin-left: -200px;
+        }
+        .info{
+          width:70%;
+            display: flex;
+            justify-content: space-between;
+          margin-left: 5%;
+          margin-right: 5%;
+        }
+        .message{
+          width:300px;
+          text-align:center;
+          font-size:12px;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          margin-top:-80px;
+          margin-left: -150px;
+          z-index: 20;
+          color: orange;
+        }
+        .u,
+        .p{
+          border: 1px solid #000;
+          width:46%;
+          height:24px;
+          border-radius:3px;
+          color:lightgrey;
+        }
+        .ok{
+          width:20%;
+          border: 1px solid lightgreen;   
+          border-radius:3px;
+          margin-right: 5%;
+          height:24px;
+          text-align:center;
+          background:lightgreen;
+          cursor:pointer;
+          color:#fff;
+        }
+        .copyright {
+          width:400px;
+          text-align:center;
+          font-size:10px;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          margin-top:20px;
+          margin-left: -200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+      放疗数据管理系统
+    </div>
+    <div class="message" id="message">
+      输入的用户名或者密码错误，请重新输入。
+    </div>
+    <div class="box">
+        <div class="info">
+            <input class="u" id="user" onfocus="cleanText()" placeholder="请输入用户名"></input>
+            <input class="p" id="password" onfocus="cleanText()" type="password" placeholder="请输入密码"></input> 
+        </div>
+        <div class="ok" id="login">登录</div>
+    </div>
+    <div class="copyright">
+      Copyright@Jingfang Technology 2020
+    </div>
+<script type="text/javascript">
+    var login=document.getElementById('login'),
+        user=document.getElementById('user'),
+        password=document.getElementById('password'),
+        message=document.getElementById('message');
+
+    user.addEventListener("change",(e)=>{
+      console.log(user)
+      message.innerHTML=e.target.value;
+    })
+// user功能
+      function userCheck(){
+        userData={
+          userName:user.value,
+          userPassword:password.value
+        }
+      if(userData.userName==undefined||userData.userName==null||userData.userPassword==undefined||userData.userPassword==null){
+      }else{
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://127.0.0.1:3000/login');
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState !== 4) {
+              return;
+          }
+          if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+            console.log(xhr.response);
+          } else {
+              console.log(xhr);
+          }
+        };
+        xhr.send(JSON.stringify(userData));
+      }
+    function cleanText(e){
+        this.text='';
+    }
+
+    var toggleHidden=function(){
+      var elem = document.getElementById('message');
+      if(elem.hasAttribute('hidden')){
+        elem.removeAttribute('hidden')
+      }else{
+        elem.setAttribute('hidden','hidden')
+      }
+    }
+</script>
+</body>
+</html>
