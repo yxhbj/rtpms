@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node app",
     "build": "browserify static/js/index.js -o static/js/bundle.js",
-    "watch": "watchify static/js/index.js -o static/js/bundle.js"
+    "watch": "watchify static/js/index.js -o static/js/bundle.js",
+    "debug": "node --inspect-brk=9229 ./app.js"
   },
   "description": "irtms",
   "author": {

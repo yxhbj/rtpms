@@ -23,7 +23,7 @@ const getPatientData = function(paramse) {
             null
           )["margin-top"];
           if (planTableMarginTop != "0px"){
-            planTable.GM("setQuery", _query).GM("refreshGrid", function() {});
+            planTable.GM("setQuery", _query);
           }
           var serverDisk=result.dbServerDisk
           document.querySelector('#totalstoragespace').innerText=serverDisk.total
@@ -345,7 +345,7 @@ function refreshPatientList() {
       .value.replace(/[^a-zA-Z0-9\-\_\/]/g, ""),
     institutionid: document.querySelector("#institution-filter").value
   };
-  patientTable.GM("setQuery", _query).GM("refreshGrid", function() {});
+  patientTable.GM("setQuery", _query);
 }
 
 //绑定选择Institution事件
@@ -397,7 +397,7 @@ function delectPatientData(rowObject) {
       xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
       xhr.send(JSON.stringify(patients));
       setTimeout(() => {
-        refreshPatientList();
+        patientTable.GM('refreshGrid');
         window.alert(
           "删除已完成，如必要，请退出并重新打开当前已经打开的LaunchPad以刷新。"
         );
