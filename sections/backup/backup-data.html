@@ -1,0 +1,68 @@
+<template class="task-template">
+  <section id="backup-data-section" class="section js-section u-category-windows">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-windows"></use></svg>
+          备份数据分析及计划
+        </h1>
+        <p>
+        <p></p>
+      </div>
+      <style>
+      </style>
+    </header>
+    <body">
+      <div class="data">
+        <div class="data-wrapper">
+          <button id="history-data-analyse-toggle" class="js-container-target rtms-toggle-button">已备份数据
+            <div class="data-meta u-avoid-clicks">备份数:
+              <span class="data-meta-backup-number"></span>
+              <span class="data-meta-divider">|</span>总容量:
+              <span class="data-meta-backup-size"></span>gb
+            </div>
+          </button>
+          <div class="data-box">
+            <div class="data-controls">
+            </div>
+            <h4 style="margin: 10px">备份详情</h4>
+            <div class="search-area">
+              <div class="sa-ele">
+                <label class="se-title">搜索:</label>
+                <input class="se-con" name="search-Backup"/>
+              </div>
+            </div>
+            <table id = "backup-data-table"></table>
+            <div id="pageBar">
+            </div>
+            <div style="width:800px;margin:0 auto;">
+              <!--button class="table-button" id="backup-data-add-row">新增</button>
+              <button class="table-button" id="backup-data-delete-row">删除</button-->
+            </div>              
+            
+          </div>
+        </div>
+        <div class="data-wrapper">
+          <button id="history-data-analyse-toggle" class="js-container-target rtms-toggle-button">备份队列
+            <div class="data-meta u-avoid-clicks">待备份数:
+              <span class="data-meta-pending-number"></span>
+              <span class="data-meta-divider">|</span>所需容量:
+              <span class="data-meta-pending-size"></span>gb
+            </div>
+          </button>
+          <div class="data-box">
+            <div class="data-controls">
+            </div>
+            <h4 style="margin: 10px">备份队列</h4>
+            <table id = "backup-pending-table"></table> 
+            
+          </div>
+      </div>
+    </body>
+    
+    <script type="text/javascript">
+      require('./renderer-process/backup/backup-data')
+    </script>
+
+  </section>
+</template>

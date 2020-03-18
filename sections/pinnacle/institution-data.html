@@ -1,0 +1,65 @@
+<template class="task-template">
+  <section id="institution-data-section" class="section js-section u-category-menu">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-menu"></use></svg>          
+          治疗计划数据
+        </h1>
+      </div>
+    </header>
+
+    <!--div class="data">
+      <div class="data-wrapper">
+        <button id="application-menu-demo-toggle" class="js-container-target rtms-toggle-button">Institution
+          <div class="data-meta u-avoid-clicks">机构 <span class="data-wrapper-divider">|</span> 分组</div>
+        </button>
+        <div class="data-box">
+          <table id = "institution-data-table"></table>
+        </div>
+      </div>
+    </div-->
+
+    <div class="data">
+      <div class="data-wrapper">
+        <button id="open-file-manager-demo-toggle" class="js-container-target rtms-toggle-button">病人
+          <div class="data-meta u-avoid-clicks">已锁定 <span class="data-wrapper-divider">|</span> 待备份</div>
+        </button>
+        <div class="data-box">
+          <div class="data-controls">
+          </div>
+          <div class="search-area">
+            <div class="sa-ele">
+              <label class="se-title" for="nation">机构:</label>
+              <input class="se-con" id="institution-filter" list="institutionList" type="text">
+              <datalist id="institutionList"></datalist>
+            </div>
+            <div class="sa-ele">
+              <label class="se-title">搜索:</label>
+              <input class="se-con" name="search-Field"/>
+            </div>
+          </div>
+          <table id = "patient-data-table"></table>
+        </div>
+      </div>
+    </div>
+
+    <div class="data">
+      <div class="data-wrapper">
+        <button id="open-ex-links-demo-toggle" class="js-container-target rtms-toggle-button">计划
+          <div class="data-meta u-avoid-clicks">已锁定计划 <span class="data-wrapper-divider">|</span> 未锁定计划</div>
+        </button>
+        <div class="data-box">
+          <div class="data-controls">
+          </div>
+          <table id = "plan-data-table"></table>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/prosdb/institution-data.js')
+    </script>
+
+  </section>
+</template>

@@ -82,6 +82,12 @@ router.post("/backupData", async function(req, res, next) {
           (+objPage.cPage < 1 ? 1 : +objPage.cPage) * +objPage.pSize
         );
         utils.getServers().then(servers=>{
+          var server=servers.filter(s=>{
+            if(s.ip==settings.pgConfig.host) {
+              return s;
+            }
+          })[0];
+          utils.getSysInfo(server).then(sysInfo=>{
             res.write(
               JSON.stringify({
                 data: pageData,
@@ -89,10 +95,11 @@ router.post("/backupData", async function(req, res, next) {
                 backupTotalNumber: backupTotalNumber,
                 backupTotalSize: backupTotalSize.toFixed(2),
                 defaultSelectedInstitution: settings.institution.defaultInstitution,
-                backupServerDisk: servers[0].disk
+                backupServerDisk: sysInfo.disk
               })
             );
             res.end();
+          })
         })
       });
     });

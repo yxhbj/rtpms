@@ -1,0 +1,154 @@
+<template class="task-template">
+  <section id="system-settings-section" class="section js-section u-category-system">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-system"></use></svg>
+          系统参数
+        </h1>
+      </div>
+    </header>
+
+    <div class="data">
+      <div class="data-wrapper">
+        <button id="new-window-crashes-demo-toggle" class="js-container-target rtms-toggle-button">设置数据库和备份的参数
+          <div class="data-meta u-avoid-clicks">支持: 数据库 <span class="data-meta-divider">|</span> 程序: 主线</div>
+        </button>
+        <div class="data-box">
+          <div class="data-controls" style="display:flex;margin-bottom: 10px">
+            <button class="data-button" id="process-save-settings">保存参数</button>
+            <button class="data-button" id="process-init-backuplist">数据同步</button>
+          </div>
+          <h4 style="margin: 10px">本地数据库</h4>
+          <form id="institution-settings-form" style="width: 100%;">
+            <div style="display: flex;width: 100%;border: 1px solid #ccc;">
+              <div style="width: 45%;">
+                <div class="form-group">
+                  <label class="institution-form-lable" for="nation">默认机构</label>
+                  <input class="institution-form-input" list="institutions" type="text" name="defaultInstitution">
+                  <datalist id="institutions"></datalist>
+                </div>
+                <div class="form-group">
+                  <label class="institution-form-lable" for="nation">已备份数据库</label>
+                  <input class="institution-form-input" type="text" name="backupedFileName">
+                </div>
+                <div class="form-group">
+                  <label class="institution-form-lable" for="nation">待备份数据库</label>
+                  <input class="institution-form-input" type="text" name="backupPendingFileName">
+                </div>
+              </div>
+              <div style="width: 6%;"> 
+              </div>
+              <div style="width: 45%;">
+                <div class="form-group">
+                  <label class="institution-form-lable" for="nation">机构数据库</label>
+                  <input class="institution-form-input" type="text" name="institutionFileName">
+                </div>
+                <div class="form-group">
+                  <label class="institution-form-lable" for="nation">病人数据库</label>
+                  <input class="institution-form-input" type="text" name="patientFileName">
+                </div>
+                <div class="form-group">
+                  <label class="institution-form-lable" for="nation">治疗计划数据库</label>
+                  <input class="institution-form-input" type="text" name="planFileName">
+                </div>
+              </div>
+            </div>
+          </form>
+          <h4 style="margin: 10px">数据库参数</h4>
+          <form id="database-settings-form" style="width: 100%;">
+            <div style="display: flex;width: 100%;border: 1px solid #ccc;">
+              <div style="width: 45%;">
+                <div class="form-group">
+                  <label class="database-form-lable" for="jobNumber">TPS服务器</label>
+                  <input class="database-form-input" type="text" name="host">
+                </div>
+                <div class="form-group">
+                  <label class="database-form-lable" for="nation">数据库名称</label>
+                  <input class="database-form-input" type="text" name="database">
+                </div>
+                <div class="form-group">
+                  <label class="database-form-lable" for="gender">用户名</label>
+                  <input class="database-form-input" type="text" name="user">
+                </div>
+                <div class="form-group">
+                  <label class="database-form-lable" for="gender">密码</label>
+                  <input class="database-form-input" type="password" name="password">
+                </div>
+              </div>
+              <div style="width: 6%;"> 
+              </div>
+              <div style="width: 45%;">
+                <div class="form-group">
+                  <label class="database-form-lable" for="nation">数据库端口号</label>
+                  <input class="database-form-input" type="text" name="port">
+                </div>
+                <div class="form-group">
+                  <label class="database-form-lable" for="maxConnNumber">连接池最大连接数</label>
+                  <div style="display: flex;">
+                    <input style="width: 90%;margin-right: 10%;" class="database-form-input" min="10" max="100" step="10" type="range"  name="max">
+                    <span id="showCn">0</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="database-form-lable" for="gender">连接最大空闲时间(毫秒)</label>
+                  <input  class="database-form-input" type="text" name="idleTimeoutMillis">
+                </div>
+              </div>
+            </div>
+          </form>
+          <h4 style="margin: 10px">备份参数</h4>
+          <form id="backup-settings-form" style="width: 100%;">
+            <div style="display: flex;width: 100%;border: 1px solid #ccc;">
+              <div style="width: 45%;">
+                <div class="form-group">
+                  <label class="backup-form-lable" for="name">开始备份时间</label>
+                  <input class="backup-form-input" type="time" name="startTime">
+                </div>
+                <div class="form-group">
+                  <label class="backup-form-lable" for="name">自动维护可用存储区比例</label>
+                  <input id="autoDeletePatient" type="checkbox">
+                  <input class="backup-form-input" type="hidden" name="autoDeletePatient">
+                </div>
+                <div id="spaceLimit">
+                  <div class="form-group">
+                    <label class="backup-form-lable" for="name">最大允许存储空间百分比</label>
+                    <div style="display: flex;">
+                      <input style="width: 90%;margin-right: 10%" class="backup-form-input" min="0" max="100" type="range"  name="capacityUpperLimit">
+                      <span id="showCapacity">0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div style="width: 6%;"> 
+              </div>
+              <div style="width: 45%;">
+                <div class="form-group">
+                  <label class="backup-form-lable" for="jobNumber">每天备份病人数量</label>
+                  <div style="display: flex;">
+                    <input style="width: 90%;margin-right: 10%;" class="backup-form-input" min="10" max="100" step="10" type="range"  name="backupNumberPerDay">
+                    <span id="showBN">0</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="backup-form-lable" for="gender">只备份具有锁定计划的病人？</label>
+                  <input type="checkbox" id="backupLockedOnly">
+                  <input class="backup-form-input" type="hidden" name="backupLockedOnly">
+                </div>
+              </div>
+            </div>
+          </form>
+          <h4 style="margin: 10px">服务器</h4>
+          <table id = "system-server-table"></table>
+          <div id="system-servers"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      require('./renderer-process/system/settings')
+      require('./renderer-process/system/server')
+    </script>
+
+  </section>
+</template>

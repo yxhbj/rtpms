@@ -395,13 +395,21 @@ function delectPatientData(rowObject) {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", "http://127.0.0.1:3000/deletePatient");
       xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+      xhr.onreadystatechange = function() {
+        console.log(xhr.status)
+        if (xhr.readyState !== 4) {
+          return;
+        }
+        if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+          var result=JSON.parse(xhr.response)
+          console.log(result)
+          setTimeout(()=>{
+              patientTable.GM('refreshGrid');
+            window.alert('删除已完成，如必要，请退出并重新打开当前已经打开的LaunchPad以刷新。');
+          }, 6000);
+        }
+      }
       xhr.send(JSON.stringify(patients));
-      setTimeout(() => {
-        patientTable.GM('refreshGrid');
-        window.alert(
-          "删除已完成，如必要，请退出并重新打开当前已经打开的LaunchPad以刷新。"
-        );
-      }, 10000);
     }
   }
 }

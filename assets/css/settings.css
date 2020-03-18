@@ -1,0 +1,23 @@
+.form-group{
+  display: flex;
+  margin: 1%;
+  width: 107%;
+} 
+.institution-form-lable{
+  width: 50%;
+}
+.institution-form-input{
+  width: 80%;
+}
+.backup-form-lable{
+  width: 50%;
+}
+.backup-form-input{
+  width: 80%;
+}
+.database-form-lable{
+  width: 50%;
+}
+.database-form-input{
+  width: 80%;
+}

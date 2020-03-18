@@ -1,0 +1,39 @@
+<template class="task-template">
+  <section id="system-logs-section" class="section js-section u-category-system">
+    <header class="section-header">
+      <div class="section-wrapper">
+        <h1>
+          <svg class="section-icon"><use xlink:href="assets/img/icons.svg#icon-system"></use></svg>
+          系统以及操作日志
+        </h1>
+      </div>
+    </header>
+
+    <div class="data">
+      <div class="data-wrapper">
+        <button id="new-window-crashes-demo-toggle" class="js-container-target rtms-toggle-button">服务器故障记录
+          <div class="data-meta u-avoid-clicks">支持: Solaris <span class="data-meta-divider">|</span> 程序: 主线</div>
+        </button>
+        <div class="data-box">
+          <h4 style="margin: 10px">系统日志</h4>
+          <div class="form-group">
+            <label class="server-form-lable" for="nation">/var/adm/messages</label>
+            <input class="server-form-input" list="servers" type="text" name="selectedServer">
+            <datalist id="servers"></datalist>
+          </div>
+          <div id="wrapper">
+            <div id="control-area"></div>
+            <p id="text_area" style="background-color:white;border: 1px solid #ccc;height:100%;width:100%;">
+              <textarea></textarea>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      //require('./renderer-process/system/logs')
+    </script>
+
+  </section>
+</template>

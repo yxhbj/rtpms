@@ -139,18 +139,26 @@ router.post("/patient", async function(req, res, next) {
             (+objPage.cPage < 1 ? 1 : +objPage.cPage) * +objPage.pSize
           );
           utils.getServers().then(servers=>{
+            var server=servers.filter(s=>{
+              if(s.ip==settings.pgConfig.host) {
+                return s;
+              }
+            })[0];
+            utils.getSysInfo(server).then(sysInfo=>{
               res.write(
                 JSON.stringify({
                   data: pageData,
                   totals: resBl.length,
                   settings: settings,
-                  dbServerDisk: servers[2].disk
+                  dbServerDisk: sysInfo.disk
                 })
               );
               res.end();
+            }).catch(err => (err));
           })
+          .catch(err => (err));
         })
-        .catch(err => console.log(err));
+        .catch(err => (err));
     });
   } catch (e) {
     console.log(e);
@@ -300,29 +308,12 @@ router.post("/openPlan", async function(req, res, next) {
 router.post("/deletePatient", async function(req, res, next) {
   if (JSON.stringify(req.body) != "{}") {
     var patients = req.body;
-    utils.deletePatient(patients);
+    utils.deletePatient(patients).then(result=>{
+      console.log(result)
+      res.write(JSON.stringify(result));
+      res.end();
+    }).catch(e=>console.log(e))
   }
-});
-/* POST settings. */
-router.post("/settings", async function(req, res, next) {
-  var settings = await getSettings();
-  if (JSON.stringify(req.body) != "{}") {
-    //Write to database file
-    settings.institution.defaultInstitution =
-      req.body.institution.defaultInstitution;
-    settings.pgConfig = req.body.pgConfig;
-    settings.backup = req.body.backup;
-    var ws = fs.createWriteStream("database/settings.json", { start: 0 });
-    var buffer = new Buffer.from(JSON.stringify(settings));
-    ws.write(buffer, "utf8", function(err, buffer) {
-      console.log("Write settings completely finished");
-    });
-    ws.end("");
-  }
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.setHeader("Content-Type", "application/json;charset=utf-8");
-  res.write(JSON.stringify(settings));
-  res.end();
 });
 
 /* POST backup data list. */
@@ -478,6 +469,77 @@ router.post("/backupPending", async function(req, res, next) {
     console.log(e);
   }
 });
+
+/* POST settings. */
+router.post("/settings", async function(req, res, next) {
+  var settings = await getSettings();
+  if (JSON.stringify(req.body) != "{}") {
+    settings = req.body;
+    utils.setSettings(settings);
+  }
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Content-Type", "application/json;charset=utf-8");
+  utils.getInstList(settings.pgConfig).then(instList=>{
+    settings.institution.institutions=instList
+    res.write(JSON.stringify(settings));
+    res.end();
+  }).catch(e=>console.log(e))
+});
+
+/* POST data synchronization. */
+router.post('/synchronization', function(req, res, next) {
+  getSettings().then(settings=>{
+    utils.updateDatabase(settings);
+  }).catch(e=>console.log(e))
+});
+
+/* POST server list. */
+router.post('/server', async function(req, res, next) {
+  var type=["nodeServer","planningServer","standaloneServer","storageServer"]
+  var servers = await utils.getServers();
+  //console.log(servers)
+  if (JSON.stringify(req.body)!='{}'){
+    servers=req.body
+    utils.setServers(req.body);
+  }
+  res.setHeader("Content-Type", "application/json;charset=utf-8" );    
+  // servers=servers.map(async server=>{
+  //   try{
+  //     try {
+  //       const sysInfo = await utils.getSysInfo(server);
+  //       server.logs = sysInfo.logs;
+  //       server.disk = sysInfo.disk;
+  //       return server;
+  //     }
+  //     catch (e) {
+  //       return server;
+  //     }
+  //   }
+  //   catch(err){
+  //     console.log(err)
+  //   }
+  // })
+  res.write(JSON.stringify(servers));
+  res.end();
+})
+
+/* POST server logs. */
+router.post('/sysInfo', async function(req, res, next) {
+  var server;
+  if (JSON.stringify(req.body)!='{}'){
+    server=req.body;
+  }
+  res.setHeader("Content-Type", "application/json;charset=utf-8" );    
+  utils.getSysInfo(server).then(sysInfo=>{
+    server.logs = sysInfo.logs;
+    res.write(JSON.stringify(server));
+    res.end();
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+})
+
 /* POST check user. */
 router.post("/user", async function(req, res, next) {
   //console.log(req.body)

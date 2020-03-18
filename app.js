@@ -10,16 +10,9 @@ var createError = require('http-errors');
 var ejs = require('ejs');
 var utils = require('./public/javascripts/utils');
 
-utils.initServers();
-utils.updateSettings();
-utils.updateBackupedFile();
-utils.updateDatabaseFile();
-utils.updateBackupPendingList();
+utils.initAppServer();
 
 var indexRouter = require('./routes/index');
-var backupRouter = require('./routes/backup');
-var prosdbRouter = require('./routes/prosdb');
-var systemRouter = require('./routes/system');
 
 var app = express();
 
@@ -37,9 +30,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.use('/', indexRouter);
-app.use('/backup', backupRouter);
-app.use('/prosdb', prosdbRouter);
-app.use('/system', systemRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
