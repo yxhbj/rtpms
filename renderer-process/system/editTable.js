@@ -62,7 +62,8 @@ function createTextBox(element, value){
 		var textBox = document.createElement("INPUT");
 		textBox.type = "text";
 		textBox.className="EditCell_TextBox";
-		
+		textBox.style.height = element.parentNode.style.height;
+		textBox.width = element.parentNode.width;
 		
 		//设置文本框当前值
 		if(!value){
@@ -96,7 +97,8 @@ function createPasswdBox(element, value){
 		var PasswdBox = document.createElement("INPUT");
 		PasswdBox.type = "password";
 		PasswdBox.className="EditCell_PasswdBox";
-		
+		PasswdBox.style.height = element.parentNode.style.height;
+		PasswdBox.width = element.parentNode.width;
 		
 		//设置文本框当前值
 		if(!value){
@@ -130,6 +132,8 @@ function createDropDownList(element, value){
 		//创建下接框
 		var downList = document.createElement("Select");
 		downList.className="EditCell_DropDownList";
+		downList.style.height = element.parentNode.style.height;
+		downList.width = element.parentNode.width;
 	
 		//添加列表项
 		var items = element.getAttribute("dataItems");
@@ -172,6 +176,7 @@ function createDropDownList(element, value){
 
 //取消单元格编辑状态
 function cancelEditCell(element, value, editType){
+	element.value=value
 	element.setAttribute("Value", value);
 	if(editType=="password"){
 		element.innerHTML = "********";
@@ -194,6 +199,10 @@ function addRow(table, index){
 	var lastRow = table.rows[table.rows.length-1];
 	var newRow = lastRow.cloneNode(true);
 	table.tBodies[0].appendChild(newRow);
+	newRow.cells[0].value=newRow.parentNode.rows.length-2
+	for(var i = 1;i< newRow.cells.length-1;i++){
+		newRow.cells[i].value=newRow.parentNode.rows[newRow.parentNode.rows.length-2].cells[i].value
+	}
 	setRowCanEdit(newRow);
 	return newRow;
 }

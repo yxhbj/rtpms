@@ -7,7 +7,7 @@ var planTable = document.querySelector("#plan-data-table");
 const getInstitutionData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:3000/institution");
+    xhr.open("POST", "http://192.168.0.105:3000/institution");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -97,7 +97,7 @@ function institutionInit() {
 const getPatientData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:3000/patient");
+    xhr.open("POST", "http://192.168.0.105:3000/patient");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -271,7 +271,7 @@ function patientInit(institutionId) {
 const getPlanData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:3000/plan");
+    xhr.open("POST", "http://192.168.0.105:3000/plan");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -367,7 +367,7 @@ function planInit(patientid) {
 
 function init() {
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://127.0.0.1:3000/settings");
+  xhr.open("POST", "http://192.168.0.105:3000/settings");
   xhr.setRequestHeader("Content-Type", "multipart/form-data");
   xhr.onreadystatechange = function() {
     //console.log(xhr.status)
@@ -439,7 +439,7 @@ ipcRenderer.on("delete-dialog-selection", (event, para) => {
     var patients = [];
     patients.push(para.patient);
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:3000/deletePatient");
+    xhr.open("POST", "http://192.168.0.105:3000/deletePatient");
     xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
     xhr.send(JSON.stringify(patients));
     setTimeout(() => {

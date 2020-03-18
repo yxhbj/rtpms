@@ -5,7 +5,7 @@ serverTable.width = "100%";
 var thr, thd, tr, td;
 
 genTableHead()
-postForm("http://127.0.0.1:3000/server").then(servers=>{
+postForm("http://192.168.0.105:3000/server").then(servers=>{
   try{
     servers=JSON.parse(JSON.stringify(servers))
     loadData(servers);
@@ -40,7 +40,7 @@ function renderData(data){
 }
 
 function getLogs(server){
-  postForm("http://127.0.0.1:3000/sysInfo",server).then(server=>{
+  postForm("http://192.168.0.105:3000/sysInfo",server).then(server=>{
     try{
       server=JSON.parse(server)
       document.querySelector("#text_area").innerHTML = server.logs.replace(/\"/g, "").replace(/\r\n/g, "<br>");
@@ -91,7 +91,7 @@ function genTableHead(){
     thr.style.backgroundColor = "lightgrey";
     thr.style.height = "30px";
     if(j=='type'){
-      thd.setAttribute("DataItems","{text:'NodeServer',value:'NodeServer'},{text:'PlanningServer',value:'PlanningServer'},{text:'StandaloneServer',value:'StandaloneServer'},{text:'StorageServer',value:'StorageServer'}")
+      thd.setAttribute("DataItems","{text:'NodeServer',value:'NodeServer'},{text:'PlanningServer',value:'PlanningServer'},{text:'StandaloneServer',value:'StandaloneServer'},{text:'BackupServer',value:'BackupServer'}")
     }
     if(j=='os'){
       thd.setAttribute("DataItems","{text:'Solaris',value:'Solaris'},{text:'Windows',value:'Windows'},{text:'Linux',value:'Linux'},{text:'Mac OS',value:'Mac OS'}")
@@ -172,7 +172,7 @@ function addAction(tr){
     console.log(e)
     var formData=editTable.getTableData(serverTable)
     console.log(formData)
-    postForm("http://127.0.0.1:3000/server",formData);
+    postForm("http://192.168.0.105:3000/server",formData);
   })
   td.align = "center";
 }

@@ -6,12 +6,12 @@ var instElements = document.querySelectorAll(".institution-form-input");
 var dbElements = document.querySelectorAll(".database-form-input");
 var bkpElements = document.querySelectorAll(".backup-form-input");
 
-postForm("http://127.0.0.1:3000/settings");
+postForm("http://192.168.0.105:3000/settings");
 setEventListeners();
 
 ipcRenderer.on("information-dialog-selection", (event, index) => {
   if (index === 0) {
-    postForm("http://127.0.0.1:3000/initialization");
+    postForm("http://192.168.0.105:3000/initialization");
   }
 });
 
@@ -74,7 +74,7 @@ function loadData(data) {
 
 function setEventListeners() {
   initBtn.addEventListener("click", event => {
-    postForm("http://127.0.0.1:3000/synchronization");
+    postForm("http://192.168.0.105:3000/synchronization");
     //ipcRenderer.send('open-information-dialog')
   });
   subBtn.onclick = function(e) {
@@ -89,7 +89,7 @@ function setEventListeners() {
       data.backup[bkpElements[i].name] = bkpElements[i].value;
     }
     //console.log(data)
-    postForm("http://127.0.0.1:3000/settings", data);
+    postForm("http://192.168.0.105:3000/settings", data);
   };
   document.querySelector('[name="max"]').addEventListener("input", function() {
     document.querySelector("#showCn").innerHTML = this.value;
