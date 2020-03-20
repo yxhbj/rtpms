@@ -1,7 +1,19 @@
 {
   "name": "rtpms",
+  "productName": "rtpms",
   "version": "0.0.1",
+  "description": "Radiotherapy Plan Management System",
+  "keywords": [
+    "放射治疗计划系统",
+    "治疗计划数据",
+    "自动备份"
+  ],
+  "author": {
+    "name": "Jingfang Technology"
+  },
   "private": true,
+  "main": "main.js",
+  "bin": "cli.js",
   "scripts": {
     "start": "electron .",
     "build": "browserify static/js/index.js -o static/js/bundle.js",
@@ -12,17 +24,6 @@
     "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=assets/app-icon/mac/app.icns --osx-sign.identity='Developer ID Application: GitHub' --extend-info=assets/mac/info.plist",
     "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --asar --out=out --icon=assets/app-icon/win/favicon.ico",
     "package:linux": "electron-packager . --overwrite --platform=linux --arch=x64 --out=out"
-  },
-  "description": "Radiotherapy Plan Management System",
-  "bin": "cli.js",
-  "main": "main.js",
-  "keywords": [
-    "放射治疗计划系统",
-    "治疗计划数据",
-    "自动备份"
-  ],
-  "author": {
-    "name": "Jingfang Technology"
   },
   "dependencies": {
     "acorn": "^7.1.1",
@@ -73,5 +74,10 @@
     "signcode": "^1.0.0",
     "spectron": "^10.0.1",
     "standard": "^14.3.3"
+  },
+  "standard": {
+    "env": {
+      "mocha": true
+    }
   }
 }

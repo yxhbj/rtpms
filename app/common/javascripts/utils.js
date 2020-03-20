@@ -4,6 +4,9 @@ var request = require("request"),
   schedule = require("node-schedule");
 
 const electronSettings = require("electron-settings");
+
+//----------------------------------ssh section-------------------------
+
 const node_ssh = require("node-ssh"); // ssh连接服务器
 
 function execCommands(config, commands) {
@@ -41,6 +44,8 @@ function execCommand(command, ssh) {
       });
   });
 }
+
+//----------------------------------fs section-------------------------
 
 function readDataFile(fileName) {
   return new Promise((resolve, reject) => {
@@ -87,6 +92,18 @@ function writeDataFile(tableName, fileName, data) {
   });
   ws.end("");
 }
+
+function writeFile(table, fileData) {
+  //Write to file
+  var ws = fs.createWriteStream(table.fileName, { start: 0 });
+  var buffer = new Buffer.from(JSON.stringify(fileData));
+  ws.write(buffer, "utf8", function(err, buffer) {
+    console.log(`Write ${table.tbName} completely finished`);
+  });
+  ws.end("");
+}
+
+//----------------------------------setting section-------------------------
 
 function defaultSettings() {
   return {
@@ -167,6 +184,8 @@ function getInstList(pgConfig) {
     });
   });
 }
+
+//----------------------------------server section-------------------------
 
 //read server list
 function getServers() {
@@ -303,6 +322,46 @@ function initServers() {
     });
 }
 
+//----------------------------------user section-------------------------
+
+function sampleUser() {
+  return [
+    {
+      id: 0,
+      username: "",
+      gender: "",
+      cellPhone: "",
+      email: "",
+      loginName: "",
+      password: "",
+      role: ""
+    }
+  ]
+}
+//read user list
+function getUsers() {
+  return new Promise((resolve, reject) => {
+    var users = electronSettings.get("users",sampleUser());
+    resolve(users);
+  });
+}
+
+function setUsers(users) {
+  electronSettings.set("users", users);
+}
+
+function updateUsers(users) {
+  electronSettings.set("users", users);
+}
+
+//----------------------------------backup section-------------------------
+
+function updateBackupedFile() {
+  schedule.scheduleJob("0 * * * * *", () => {
+    updateBackupData();
+  });
+}
+
 //get backup data from backuped files
 async function getBackupData(settings) {
   try {
@@ -312,13 +371,7 @@ async function getBackupData(settings) {
   }
 }
 
-function updateBackupedFile() {
-  schedule.scheduleJob("0 * * * * *", () => {
-    updateBackupData();
-  });
-}
-
-//get backup data from backuped files
+//update backup data
 function updateBackupData() {
   readBackupedFileList()
     .then(system => checkAndWrite(system))
@@ -373,6 +426,7 @@ function readBackupedFileList() {
       .catch(err => reject(err));
   });
 }
+
 function backupValid(backupFiles, bkpData) {
   if (bkpData.length > 0) {
     return bkpData.filter(c => {
@@ -389,6 +443,7 @@ function backupValid(backupFiles, bkpData) {
     return bkpData;
   }
 }
+
 function checkAndWrite(system) {
   getBackupData(system.settings).then(currentBackuped => {
     currentBackuped = backupValid(system.data, currentBackuped);
@@ -471,18 +526,7 @@ function getBackupHeadInfo(system, data) {
   });
 }
 
-function sumBigNumber(a, b) {
-  var res = "",
-    temp = 0;
-  a = a.toString().split("");
-  b = b.toString().split("");
-  while (a.length || b.length || temp) {
-    temp += ~~a.pop() + ~~b.pop();
-    res = (temp % 10) + res;
-    temp = temp > 9;
-  }
-  return res.replace(/^0+/, "");
-}
+//----------------------------------prosdb section-------------------------
 
 //update database files
 const updateDatabaseFile = () => {
@@ -719,15 +763,7 @@ function writeTable(settings, dbList) {
     .catch(e => console.log(e));
 }
 
-function writeFile(table, fileData) {
-  //Write to file
-  var ws = fs.createWriteStream(table.fileName, { start: 0 });
-  var buffer = new Buffer.from(JSON.stringify(fileData));
-  ws.write(buffer, "utf8", function(err, buffer) {
-    console.log(`Write ${table.tbName} completely finished`);
-  });
-  ws.end("");
-}
+//----------------------------------backup pending section-------------------------
 
 async function updateBackupPendingList() {
   var settings = await getSettings();
@@ -823,6 +859,9 @@ async function transferPendingList(data) {
     .then()
     .catch(e => e);
 }
+
+//----------------------------------plan section-------------------------
+
 async function exportPlanInfo(plan) {
   var settings = await getSettings();
   var servers = await getServers();
@@ -898,6 +937,21 @@ function deletePatient(patients) {
         .catch(e => e);
     })
     .catch(err => err);
+}
+
+//----------------------------------common function section-------------------------
+
+function sumBigNumber(a, b) {
+  var res = "",
+    temp = 0;
+  a = a.toString().split("");
+  b = b.toString().split("");
+  while (a.length || b.length || temp) {
+    temp += ~~a.pop() + ~~b.pop();
+    res = (temp % 10) + res;
+    temp = temp > 9;
+  }
+  return res.replace(/^0+/, "");
 }
 
 function sortList(list, sortBy, sortAscent, cb) {
@@ -1072,11 +1126,13 @@ function convertSize(arr) {
   }
   return str;
 }
+
 function initAppServer() {
   updateBackupedFile();
   updateDatabaseFile();
   updateBackupPendingList();
 }
+
 module.exports = {
   readDataFile,
   sortList,
@@ -1084,8 +1140,6 @@ module.exports = {
   getBackupData,
   updateBackupData,
   getBackupHeadInfo,
-  getSettings,
-  getServers,
   getProsData,
   updateDatabase,
   updateDatabaseFile,
@@ -1099,10 +1153,15 @@ module.exports = {
   readBackupedFileList,
   execCommands,
   exportPlanInfo,
-  updateServers,
+  getSettings,
   updateSettings,
   setSettings,
+  getServers,
+  updateServers,
   setServers,
+  getUsers,
+  updateUsers,
+  setUsers,
   initAppServer,
   getSysInfo,
   getInstList

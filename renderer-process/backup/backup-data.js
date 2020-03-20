@@ -180,7 +180,7 @@ pendingTable.GM(
     useRadio: false,
     supportAjaxPage: false,
     supportSorting: true,
-    emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+    emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
     ajaxData: function(settings, params) {
       // 传入参数信息
       return getPendingData(params);

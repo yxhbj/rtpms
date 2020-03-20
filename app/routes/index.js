@@ -2,9 +2,8 @@
 var fs = require("fs");
 var express = require("express");
 var router = express.Router();
-var utils = require("../public/javascripts/utils");
+var utils = require("../common/javascripts/utils");
 var sortList = utils.sortList;
-var getProsData = utils.getProsData;
 var getSettings = utils.getSettings;
 
 /* GET home page. */
@@ -118,6 +117,18 @@ router.post("/patient", async function(req, res, next) {
             resBl = resBl.filter(m =>
               m.institutionid == objPage.institutionid ? m : null
             );
+          }
+          //筛选backuped or not
+          if(objPage.backupTimeStamp==1){
+            var regEx=/\d{4}\-\d{2}\-\d{2}\s\d{2}\:\d{2}\:\d{2}/g;
+            resBl=resBl.filter(m=>{
+              if(!regEx.test(m.backupTimeStamp)) return m
+            })
+          }else if(objPage.backupTimeStamp==2){
+            var regEx=/\d{4}\-\d{2}\-\d{2}\s\d{2}\:\d{2}\:\d{2}/g;
+            resBl=resBl.filter(m=>{
+              if(regEx.test(m.backupTimeStamp)) return m
+            })
           }
           //按照名字和病历号搜索病人
           if (searchStr != "" && searchStr != undefined) {
@@ -547,12 +558,24 @@ router.post('/sysInfo', async function(req, res, next) {
   })
 })
 
-/* POST check user. */
-router.post("/user", async function(req, res, next) {
-  //console.log(req.body)
-  if (JSON.stringify(req.body) != "{}") {
-    var user = req.body;
-    utils.readUser(user);
+
+/* POST login */
+router.post('/login', async function(req, res, next) {
+  var user;
+  if (JSON.stringify(req.body)!='{}'){
+    user=req.body;
   }
-});
+  res.setHeader("Content-Type", "application/json;charset=utf-8" );    
+  utils.getUsers().then(users=>{
+    var userInfo = users.filter(u=>{
+      if(u.loginName===user.loginName&&u.password===user.password) return u
+    });
+    res.write(JSON.stringify(userInfo));
+    res.end();
+  })
+  .catch(err=>{
+    console.log(err)
+  })
+})
+
 module.exports = router;

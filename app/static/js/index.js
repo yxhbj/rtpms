@@ -65,7 +65,7 @@ function patientInit(institutionId) {
       useRadio: true,
       supportAjaxPage: true,
       supportSorting: true,
-      emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+      emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
       ajaxData: function(settings, params) {
         // 传入参数信息
         return getPatientData(params);
@@ -111,7 +111,15 @@ function patientInit(institutionId) {
         {
           key: "backupTimeStamp",
           text: "备份时间",
-          sorting: ""
+          sorting: "",
+          filter: {
+            option:[
+              {value: '1', text: '未备份的数据项'},
+              {value: '2', text: '已备份的数据项'},
+              {value: '3', text: '全部'}
+            ],
+            selected: '3'
+          }
         },
         {
           key: "backupFileName",
@@ -219,7 +227,7 @@ function planInit(patientid) {
     height: "",
     supportAjaxPage: false,
     supportSorting: true,
-    emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+    emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
     ajaxData: function(settings, params) {
       // 传入参数信息
       return getPlanData(params);
@@ -458,7 +466,7 @@ function treatmentInit() {
       useRadio: false,
       supportAjaxPage: true,
       supportSorting: true,
-      emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+      emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
       ajaxData: function(settings, params) {
         // 传入参数信息
         return getTreatmentData(params);
@@ -765,7 +773,7 @@ pendingTable.GM('init',{
   ,useRadio:false
   ,supportAjaxPage:false
   ,supportSorting: true
-  ,emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>'
+  ,emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>'
   ,ajaxData:  function(settings, params) {
       // 传入参数信息
       return getPendingData(params); 

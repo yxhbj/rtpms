@@ -10,12 +10,21 @@
       </header>
       <main class="about-sections">
         <section class="about-section about-code">
-          <h2>关于精放科技</h2>
+          <h2>欢迎使用</h2>
             <p><a href="http://www.jingfang.tech">精放科技<span class="u-visible-to-screen-reader">(opens in new window)</span></a>竭诚为你提供专业的肿瘤放射治疗技术服务！</p>
         </section>
         <footer class="about-section footer">
-          <div class="rainbow-button-wrapper">
-            <button id="get-started" class="about-button modal-hide">返回</button>
+          <div class="message" id="message"></div>
+          <div class="box">
+            <div class="info">
+              <input class="u" id="user" onfocus="cleanText()" placeholder="请输入用户名"></input>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <input class="p" id="password" onfocus="cleanText()" type="password" placeholder="请输入密码"></input> 
+            </div>
+            <div class="rainbow-button-wrapper">
+              <button id="get-started" class="about-button modal-hide">登录</button>
+            </div>
           </div>
         </footer>
       </main>
@@ -23,5 +32,8 @@
   </div>
   <script type="text/javascript">
     require('./renderer-process/about/about.js')
+    function cleanText(e){
+        this.text='';
+    }
   </script>
 </template>

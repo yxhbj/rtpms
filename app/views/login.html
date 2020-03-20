@@ -110,40 +110,41 @@
       message.innerHTML=e.target.value;
     })
 // user功能
-      function userCheck(){
-        userData={
-          userName:user.value,
-          userPassword:password.value
+  function userCheck(){
+    userData={
+      userName:user.value,
+      userPassword:password.value
+    }
+    if(userData.userName==undefined||userData.userName==null||userData.userPassword==undefined||userData.userPassword==null){
+    }else{
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'http://192.168.0.105:3000/login');
+      xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) {
+            return;
         }
-      if(userData.userName==undefined||userData.userName==null||userData.userPassword==undefined||userData.userPassword==null){
-      }else{
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://192.168.0.105:3000/login');
-        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState !== 4) {
-              return;
-          }
-          if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
-            console.log(xhr.response);
-          } else {
-              console.log(xhr);
-          }
-        };
-        xhr.send(JSON.stringify(userData));
-      }
-    function cleanText(e){
-        this.text='';
+        if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+          console.log(xhr.response);
+        } else {
+            console.log(xhr);
+        }
+      };
+      xhr.send(JSON.stringify(userData));
     }
+  }
+  function cleanText(e){
+    this.text='';
+  }
 
-    var toggleHidden=function(){
-      var elem = document.getElementById('message');
-      if(elem.hasAttribute('hidden')){
-        elem.removeAttribute('hidden')
-      }else{
-        elem.setAttribute('hidden','hidden')
-      }
+  var toggleHidden=function(){
+    var elem = document.getElementById('message');
+    if(elem.hasAttribute('hidden')){
+      elem.removeAttribute('hidden')
+    }else{
+      elem.setAttribute('hidden','hidden')
     }
+  }
 </script>
 </body>
 </html>

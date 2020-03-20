@@ -11,7 +11,7 @@
 
     <div class="data">
       <div class="data-wrapper">
-        <button id="new-window-crashes-demo-toggle" class="js-container-target rtms-toggle-button">设置数据库和备份的参数
+        <button id="system-setings-toggle" class="js-container-target rtms-toggle-button">设置数据库和备份的参数
           <div class="data-meta u-avoid-clicks">支持: 数据库 <span class="data-meta-divider">|</span> 程序: 主线</div>
         </button>
         <div class="data-box">
@@ -138,16 +138,28 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+      <div class="data-wrapper">
+        <button id="server-config-toggle" class="js-container-target rtms-toggle-button">服务器及用户设置
+          <div class="data-meta u-avoid-clicks">服务器: 管理 <span class="data-meta-divider">|</span> 用户: 管理 </div>
+        </button>
+        <div class="data-box">
           <h4 style="margin: 10px">服务器</h4>
           <table id = "system-server-table"></table>
           <div id="system-servers"></div>
+          <h4 style="margin: 10px">用户</h4>
+          <table id = "system-user-table"></table>
+          <div id="system-users"></div>
         </div>
       </div>
+    </div>
     </div>
 
     <script type="text/javascript">
       require('./renderer-process/system/settings')
       require('./renderer-process/system/server')
+      require('./renderer-process/system/user')
     </script>
 
   </section>

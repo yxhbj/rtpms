@@ -8,6 +8,7 @@ if (require.main !== module) {
 const path = require('path')
 const glob = require('glob')
 const {app, BrowserWindow} = require('electron')
+const settings = require('electron-settings')
 
 const debug = true///--debug/.test(process.argv[2])
 let isDevelopment = true//false
@@ -61,8 +62,13 @@ function initialize () {
   app.on('ready', () => {
     createWindow()
   })
+  app.on('reload', () => {
+    settings.delete('activeSectionButtonId')
+  })
 
   app.on('window-all-closed', () => {
+    settings.set('activeSectionButtonId','button-institution-data')
+    settings.delete('activeSectionButtonId')
     if (process.platform !== 'darwin') {
       app.quit()
     }
@@ -101,7 +107,7 @@ function loadFuncs () {
   const files = glob.sync(path.join(__dirname, 'main-process/**/*.js'))
   files.forEach((file) => { require(file) })
 }
-require(path.join(__dirname,'app.js'))
+require(path.join(__dirname,'./app/app.js'))
 
 initialize()
 

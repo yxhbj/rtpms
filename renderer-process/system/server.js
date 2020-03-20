@@ -169,9 +169,9 @@ function addAction(tr){
   saveImg.width="16";
   saveImg.style.margin="4px";
   saveImg.addEventListener("click",e=>{
-    console.log(e)
+    //console.log(e)
     var formData=editTable.getTableData(serverTable)
-    console.log(formData)
+    //console.log(formData)
     postForm("http://192.168.0.105:3000/server",formData);
   })
   td.align = "center";

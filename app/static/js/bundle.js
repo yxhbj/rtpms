@@ -26,7 +26,7 @@ const getPatientData = function(paramse) {
             null
           )["margin-top"];
           if (planTableMarginTop != "0px"){
-            planTable.GM("setQuery", _query).GM("refreshGrid", function() {});
+            planTable.GM("setQuery", _query);
           }
           var serverDisk=result.dbServerDisk
           document.querySelector('#totalstoragespace').innerText=serverDisk.total
@@ -68,7 +68,7 @@ function patientInit(institutionId) {
       useRadio: true,
       supportAjaxPage: true,
       supportSorting: true,
-      emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+      emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
       ajaxData: function(settings, params) {
         // 传入参数信息
         return getPatientData(params);
@@ -114,7 +114,15 @@ function patientInit(institutionId) {
         {
           key: "backupTimeStamp",
           text: "备份时间",
-          sorting: ""
+          sorting: "",
+          filter: {
+            option:[
+              {value: '1', text: '未备份的数据项'},
+              {value: '2', text: '已备份的数据项'},
+              {value: '3', text: '全部'}
+            ],
+            selected: '3'
+          }
         },
         {
           key: "backupFileName",
@@ -222,7 +230,7 @@ function planInit(patientid) {
     height: "",
     supportAjaxPage: false,
     supportSorting: true,
-    emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+    emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
     ajaxData: function(settings, params) {
       // 传入参数信息
       return getPlanData(params);
@@ -348,7 +356,7 @@ function refreshPatientList() {
       .value.replace(/[^a-zA-Z0-9\-\_\/]/g, ""),
     institutionid: document.querySelector("#institution-filter").value
   };
-  patientTable.GM("setQuery", _query).GM("refreshGrid", function() {});
+  patientTable.GM("setQuery", _query);
 }
 
 //绑定选择Institution事件
@@ -398,13 +406,21 @@ function delectPatientData(rowObject) {
       const xhr = new XMLHttpRequest();
       xhr.open("POST", "http://192.168.0.105:3000/deletePatient");
       xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+      xhr.onreadystatechange = function() {
+        console.log(xhr.status)
+        if (xhr.readyState !== 4) {
+          return;
+        }
+        if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+          var result=JSON.parse(xhr.response)
+          console.log(result)
+          setTimeout(()=>{
+              patientTable.GM('refreshGrid');
+            window.alert('删除已完成，如必要，请退出并重新打开当前已经打开的LaunchPad以刷新。');
+          }, 6000);
+        }
+      }
       xhr.send(JSON.stringify(patients));
-      setTimeout(() => {
-        refreshPatientList();
-        window.alert(
-          "删除已完成，如必要，请退出并重新打开当前已经打开的LaunchPad以刷新。"
-        );
-      }, 10000);
     }
   }
 }
@@ -453,7 +469,7 @@ function treatmentInit() {
       useRadio: false,
       supportAjaxPage: true,
       supportSorting: true,
-      emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>',
+      emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>',
       ajaxData: function(settings, params) {
         // 传入参数信息
         return getTreatmentData(params);
@@ -760,7 +776,7 @@ pendingTable.GM('init',{
   ,useRadio:false
   ,supportAjaxPage:false
   ,supportSorting: true
-  ,emptyTemplate: '<div class="gm-emptyTemplate">没有数据</div>'
+  ,emptyTemplate: '<div class="gm-emptyTemplate">没有符合当前要求的数据</div>'
   ,ajaxData:  function(settings, params) {
       // 传入参数信息
       return getPendingData(params); 

@@ -1,4 +1,4 @@
-const settings = require('electron-settings')
+const settings = require('electron-settings');
 
 document.body.addEventListener('click', (event) => {
   if (event.target.dataset.section) {
@@ -6,7 +6,6 @@ document.body.addEventListener('click', (event) => {
   } else if (event.target.dataset.modal) {
     handleModalTrigger(event)
   } else if (event.target.classList.contains('modal-hide')) {
-    hideAllModals()
   }
 })
 
@@ -26,7 +25,7 @@ function handleSectionTrigger (event) {
 }
 
 function activateDefaultSection () {
-  document.getElementById('button-backup-data').click()
+  document.getElementById('button-institution-data').click()
 }
 
 function showMainContent () {
