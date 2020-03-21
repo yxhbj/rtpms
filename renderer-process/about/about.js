@@ -1,18 +1,19 @@
-const { ipcRenderer } = require("electron");
+const Cookies = require("js-cookie");
 document.getElementById('product-name').innerHTML = '放射治疗计划系统数据全自动备份系统'
 document.getElementById('product-version').innerHTML = '0.0.1'
 var login=document.getElementById('get-started'),
     user=document.getElementById('user'),
     password=document.getElementById('password'),
-    message=document.getElementById('message');
+    message=document.getElementById('message')
+    loginURL='http://192.168.1.16:3000/login';
 
-user.addEventListener("change",(e)=>{
-  //console.log(user)
-})
+loginSystem();
 
-login.addEventListener('click',event=>{
-    userCheck()
-})
+function loginSystem() {
+    login.addEventListener('click', () => {
+        userCheck();
+    });
+}
 
 // user功能
 function userCheck(){
@@ -27,13 +28,14 @@ function userCheck(){
     }else{
         var errMessage = "输入的用户名或者密码错误，请重新输入。";
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://192.168.0.105:3000/login');
+        xhr.open('POST', loginURL);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== 4) {
                 return;
             }
             if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
+                Cookies.set('rtpmsLogin',true)
                 if(xhr.response!="[]") hideAllModals ()
             } else {
                 console.log(xhr);
@@ -57,11 +59,3 @@ function hideAllModals () {
     showMainContent()
 }
   
-var toggleHidden=function(){
-var elem = document.getElementById('message');
-    if(elem.hasAttribute('hidden')){
-        elem.removeAttribute('hidden')
-    }else{
-        elem.setAttribute('hidden','hidden')
-    }
-}

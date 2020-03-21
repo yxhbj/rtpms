@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
     <link rel="icon" href="img/favicon.png" type="image/png">
+    <script type="text/javascript" src="js/js.cookie.js"></script>
     <title>放疗数据管理</title>
     <style type="text/css">
         .title {
@@ -86,9 +87,7 @@
     <div class="title">
       放疗数据管理系统
     </div>
-    <div class="message" id="message">
-      输入的用户名或者密码错误，请重新输入。
-    </div>
+    <div class="message" id="message"></div>
     <div class="box">
         <div class="info">
             <input class="u" id="user" onfocus="cleanText()" placeholder="请输入用户名"></input>
@@ -103,31 +102,47 @@
     var login=document.getElementById('login'),
         user=document.getElementById('user'),
         password=document.getElementById('password'),
-        message=document.getElementById('message');
+        message=document.getElementById('message'),
+        loginURL='http://192.168.1.16:3000/login',
+        indexURL='http://192.168.1.16:3000/index';
+        
+//valid user name before login
+    // user.addEventListener("change",(e)=>{
+    //   console.log(user)
+    //   message.innerHTML=e.target.value;
+    // })
+    
+  login.addEventListener('click',event=>{
+      userCheck()
+  })
 
-    user.addEventListener("change",(e)=>{
-      console.log(user)
-      message.innerHTML=e.target.value;
-    })
 // user功能
   function userCheck(){
     userData={
-      userName:user.value,
-      userPassword:password.value
+      loginName:user.value,
+      password:password.value
     }
-    if(userData.userName==undefined||userData.userName==null||userData.userPassword==undefined||userData.userPassword==null){
+    if(userData.loginName==undefined||userData.loginName==null||userData.password==undefined||userData.password==null){
+      message.innerHTML="输入的用户名或者密码不能为空，请重新输入。";
     }else{
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'http://192.168.0.105:3000/login');
+      xhr.open('POST', loginURL);
       xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
       xhr.onreadystatechange = function() {
         if (xhr.readyState !== 4) {
             return;
         }
         if (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) {
-          console.log(xhr.response);
+          if(xhr.response!="[]") {
+            Cookies.set('rtpmsLogin',true);
+            Cookies.set('userInfo',JSON.parse(xhr.response)[0]);
+            window.location.href=indexURL;
+          }else {
+            message.innerHTML="输入的用户名或者密码错误，请重新输入。";
+          }
         } else {
             console.log(xhr);
+            return;
         }
       };
       xhr.send(JSON.stringify(userData));

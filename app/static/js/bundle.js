@@ -3,12 +3,13 @@
 },{}],2:[function(require,module,exports){
 var patientTable = document.querySelector("#patient-data-table");
 var planTable = document.querySelector("#plan-data-table");
+const Cookies=require('./js.cookie.js');
 
 // 一个简单的promise请求,获取Patient数据
 const getPatientData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/patient");
+    xhr.open("POST", "http://192.168.1.16:3000/patient");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -189,7 +190,7 @@ function patientInit(institutionId) {
 const getPlanData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/plan");
+    xhr.open("POST", "http://192.168.1.16:3000/plan");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -289,7 +290,7 @@ function planInit(patientid) {
             planActionButton.classList.add("plugin-action");
             planActionButton.addEventListener("click", function(e) {
               const xhr = new XMLHttpRequest();
-              xhr.open("POST", "http://192.168.0.105:3000/openPlan");
+              xhr.open("POST", "http://192.168.1.16:3000/openPlan");
               xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
               xhr.send(JSON.stringify(rowObject));
               setTimeout(() => {
@@ -315,7 +316,7 @@ function planInit(patientid) {
 
 function init() {
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://192.168.0.105:3000/settings");
+  xhr.open("POST", "http://192.168.1.16:3000/settings");
   //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
   xhr.setRequestHeader("Content-Type", "multipart/form-data");
   xhr.onreadystatechange = function() {
@@ -404,7 +405,7 @@ function delectPatientData(rowObject) {
       var patients = [];
       patients.push(rowObject);
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://192.168.0.105:3000/deletePatient");
+      xhr.open("POST", "http://192.168.1.16:3000/deletePatient");
       xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
       xhr.onreadystatechange = function() {
         console.log(xhr.status)
@@ -430,7 +431,7 @@ init();
 const getTreatmentData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/treatment");
+    xhr.open("POST", "http://192.168.1.16:3000/treatment");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -627,7 +628,7 @@ treatmentInit();
 const getBackupData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/backupData");
+    xhr.open("POST", "http://192.168.1.16:3000/backupData");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -736,7 +737,7 @@ var pendingTable = document.querySelector('#backup-pending-table');
 const getPendingData = function(params) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://192.168.0.105:3000/backupPending');
+        xhr.open('POST', 'http://192.168.1.16:3000/backupPending');
         xhr.setRequestHeader('Content-Type', 'multipart/form-data');
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== 4) {
@@ -846,4 +847,179 @@ document
       console.log("搜索成功...");
     });
   });
-},{"child_process":1,"fs":1}]},{},[2]);
+
+  var loginUser=Cookies.getJSON('userInfo');
+  document.getElementById('user-info').innerHTML=loginUser.userName; 
+  document.querySelector('.logout').addEventListener("click",event=>{
+    console.log(event)
+    Cookies.remove('userInfo');
+    Cookies.remove('rtpmsLogin');
+    window.location.href="http://192.168.1.16:3000/";
+    exit;
+  })
+},{"./js.cookie.js":3,"child_process":1,"fs":1}],3:[function(require,module,exports){
+/*!
+ * JavaScript Cookie v2.2.1
+ * https://github.com/js-cookie/js-cookie
+ *
+ * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+ * Released under the MIT license
+ */
+;(function (factory) {
+	var registeredInModuleLoader;
+	if (typeof define === 'function' && define.amd) {
+		define(factory);
+		registeredInModuleLoader = true;
+	}
+	if (typeof exports === 'object') {
+		module.exports = factory();
+		registeredInModuleLoader = true;
+	}
+	if (!registeredInModuleLoader) {
+		var OldCookies = window.Cookies;
+		var api = window.Cookies = factory();
+		api.noConflict = function () {
+			window.Cookies = OldCookies;
+			return api;
+		};
+	}
+}(function () {
+	function extend () {
+		var i = 0;
+		var result = {};
+		for (; i < arguments.length; i++) {
+			var attributes = arguments[ i ];
+			for (var key in attributes) {
+				result[key] = attributes[key];
+			}
+		}
+		return result;
+	}
+
+	function decode (s) {
+		return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);
+	}
+
+	function init (converter) {
+		function api() {}
+
+		function set (key, value, attributes) {
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			attributes = extend({
+				path: '/'
+			}, api.defaults, attributes);
+
+			if (typeof attributes.expires === 'number') {
+				attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
+			}
+
+			// We're using "expires" because "max-age" is not supported by IE
+			attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+			try {
+				var result = JSON.stringify(value);
+				if (/^[\{\[]/.test(result)) {
+					value = result;
+				}
+			} catch (e) {}
+
+			value = converter.write ?
+				converter.write(value, key) :
+				encodeURIComponent(String(value))
+					.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+
+			key = encodeURIComponent(String(key))
+				.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+				.replace(/[\(\)]/g, escape);
+
+			var stringifiedAttributes = '';
+			for (var attributeName in attributes) {
+				if (!attributes[attributeName]) {
+					continue;
+				}
+				stringifiedAttributes += '; ' + attributeName;
+				if (attributes[attributeName] === true) {
+					continue;
+				}
+
+				// Considers RFC 6265 section 5.2:
+				// ...
+				// 3.  If the remaining unparsed-attributes contains a %x3B (";")
+				//     character:
+				// Consume the characters of the unparsed-attributes up to,
+				// not including, the first %x3B (";") character.
+				// ...
+				stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
+			}
+
+			return (document.cookie = key + '=' + value + stringifiedAttributes);
+		}
+
+		function get (key, json) {
+			if (typeof document === 'undefined') {
+				return;
+			}
+
+			var jar = {};
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all.
+			var cookies = document.cookie ? document.cookie.split('; ') : [];
+			var i = 0;
+
+			for (; i < cookies.length; i++) {
+				var parts = cookies[i].split('=');
+				var cookie = parts.slice(1).join('=');
+
+				if (!json && cookie.charAt(0) === '"') {
+					cookie = cookie.slice(1, -1);
+				}
+
+				try {
+					var name = decode(parts[0]);
+					cookie = (converter.read || converter)(cookie, name) ||
+						decode(cookie);
+
+					if (json) {
+						try {
+							cookie = JSON.parse(cookie);
+						} catch (e) {}
+					}
+
+					jar[name] = cookie;
+
+					if (key === name) {
+						break;
+					}
+				} catch (e) {}
+			}
+
+			return key ? jar[key] : jar;
+		}
+
+		api.set = set;
+		api.get = function (key) {
+			return get(key, false /* read as raw */);
+		};
+		api.getJSON = function (key) {
+			return get(key, true /* read as json */);
+		};
+		api.remove = function (key, attributes) {
+			set(key, '', extend(attributes, {
+				expires: -1
+			}));
+		};
+
+		api.defaults = {};
+
+		api.withConverter = init;
+
+		return api;
+	}
+
+	return init(function () {});
+}));
+
+},{}]},{},[2]);

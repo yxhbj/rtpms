@@ -1,11 +1,12 @@
 var patientTable = document.querySelector("#patient-data-table");
 var planTable = document.querySelector("#plan-data-table");
+const Cookies=require('./js.cookie.js');
 
 // 一个简单的promise请求,获取Patient数据
 const getPatientData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/patient");
+    xhr.open("POST", "http://192.168.1.16:3000/patient");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -186,7 +187,7 @@ function patientInit(institutionId) {
 const getPlanData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/plan");
+    xhr.open("POST", "http://192.168.1.16:3000/plan");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -286,7 +287,7 @@ function planInit(patientid) {
             planActionButton.classList.add("plugin-action");
             planActionButton.addEventListener("click", function(e) {
               const xhr = new XMLHttpRequest();
-              xhr.open("POST", "http://192.168.0.105:3000/openPlan");
+              xhr.open("POST", "http://192.168.1.16:3000/openPlan");
               xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
               xhr.send(JSON.stringify(rowObject));
               setTimeout(() => {
@@ -312,7 +313,7 @@ function planInit(patientid) {
 
 function init() {
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", "http://192.168.0.105:3000/settings");
+  xhr.open("POST", "http://192.168.1.16:3000/settings");
   //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
   xhr.setRequestHeader("Content-Type", "multipart/form-data");
   xhr.onreadystatechange = function() {
@@ -401,7 +402,7 @@ function delectPatientData(rowObject) {
       var patients = [];
       patients.push(rowObject);
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "http://192.168.0.105:3000/deletePatient");
+      xhr.open("POST", "http://192.168.1.16:3000/deletePatient");
       xhr.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
       xhr.onreadystatechange = function() {
         console.log(xhr.status)
@@ -427,7 +428,7 @@ init();
 const getTreatmentData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/treatment");
+    xhr.open("POST", "http://192.168.1.16:3000/treatment");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -624,7 +625,7 @@ treatmentInit();
 const getBackupData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/backupData");
+    xhr.open("POST", "http://192.168.1.16:3000/backupData");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -733,7 +734,7 @@ var pendingTable = document.querySelector('#backup-pending-table');
 const getPendingData = function(params) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://192.168.0.105:3000/backupPending');
+        xhr.open('POST', 'http://192.168.1.16:3000/backupPending');
         xhr.setRequestHeader('Content-Type', 'multipart/form-data');
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== 4) {
@@ -830,16 +831,35 @@ pendingTable.GM('init',{
 },callBack=>{
   //console.log(callBack)
 });
+
 // 绑定搜索事件
-document
-  .querySelector('[name="search-string"]')
-  .addEventListener("input", function() {
-    var _query = {
-      searchString: document
-        .querySelector('[name="search-string"]')
-        .value.replace(/[^a-zA-Z0-9\s\_\-]/g, "")
-    };
-    table.GM("setQuery", _query).GM("refreshGrid", function() {
-      console.log("搜索成功...");
+setListeners();
+
+logout();
+
+function setListeners() {
+  document
+    .querySelector('[name="search-string"]')
+    .addEventListener("input", function () {
+      var _query = {
+        searchString: document
+          .querySelector('[name="search-string"]')
+          .value.replace(/[^a-zA-Z0-9\s\_\-]/g, "")
+      };
+      table.GM("setQuery", _query).GM("refreshGrid", function () {
+        console.log("搜索成功...");
+      });
     });
+}
+
+function logout() {
+  var loginUser = Cookies.getJSON('userInfo');
+  document.getElementById('user-info').innerHTML = loginUser.userName;
+  document.querySelector('.logout').addEventListener("click", event => {
+    console.log(event);
+    Cookies.remove('userInfo');
+    Cookies.remove('rtpmsLogin');
+    window.location.href = "http://192.168.1.16:3000/";
+    exit;
   });
+}

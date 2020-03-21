@@ -6,10 +6,25 @@ html, body{
   padding: 0px;
   background-color: #efefef;
 }
-#content {
+#content {  
+  width: 100%;
 }
+.product-name{
+  width: 100%;
+  font-size: larger;
+  padding-top: 8px;
+  margin-left: 10px;
+  color: grey;
+  text-align: center;
+  background-color: #e8e8e8;
+}
+.logout{
+  margin:8px;
+  cursor: pointer;
+  width: 10%;
+} 
 #tab_bar {
-  width: 45%;
+  width: 200%;
   height: 40px;
   float: left;
   cursor: pointer;

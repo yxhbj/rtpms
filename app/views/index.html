@@ -8,10 +8,16 @@
     <link rel="stylesheet" type="text/css" href="css/base.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script type="text/javascript" src="js/gm.js"></script>
+    <script type="text/javascript" src="js/js.cookie.js"></script>
     <title>放疗数据管理</title>
     <style type="text/css">
     </style>
     <script type="text/javascript">
+      var loginStatus = Cookies.get('rtpmsLogin')
+      if(!loginStatus) {
+        window.location.href="http://192.168.1.16:3000/"
+        exit;
+      }      
       var myclick = function(v) {
         var llis = document.getElementsByTagName("li");
         for(var i = 0; i < llis.length; i++) {
@@ -38,27 +44,40 @@
   </head>
   <body>
     <div id="content">
-      <div id="tab_bar">
-        <ul>
-          <li id="tab1" onclick="myclick(1)" style="background-color: #efefef">
-            治疗计划资料
-          </li>
-          <li id="tab2" onclick="myclick(2)">
-            治疗数据
-          </li>
-          <li id="tab3" onclick="myclick(3)">
-            数据备份
-          </li>
-        </ul>
+      <div style="display: flex;justify-content:space-between">
+        <div style="display: flex;width: 100%;">
+          <div class="product-name">放疗计划数据管理</div> 
+          <div id="tab_bar">
+            <ul>
+              <li id="tab1" onclick="myclick(1)" style="background-color: #efefef">
+                治疗计划资料
+              </li>
+              <li id="tab2" onclick="myclick(2)">
+                治疗数据
+              </li>
+              <li id="tab3" onclick="myclick(3)">
+                数据备份
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div style="display: flex;width: 150%;justify-content:space-between">
+          <div style="width: 70%;"> </div>
+          <div style="display: flex;padding-top:8px;width: 20%;">
+            <label  style="text-align: right;">欢迎登录：</label>
+            <div id="user-info"></div>
+          </div>
+          <input class="logout" type="button" value="注销">
+        </div>
       </div>
       <div class="tab_css" id="tab1_content" style="display: block">
         <div class="head-box">
           <div class="search-area">
             <div class="sa-ele">
-            <div class="sa-ele">
-              <label class="se-title">搜索:</label>
-              <input class="se-con" name="search-Field"/>
-            </div>
+              <div class="sa-ele" style="margin-top: 0px;">
+                <label class="se-title">搜索:</label>
+                <input class="se-con" name="search-Field"/>
+              </div>
               <label class="se-title" for="nation">机构:</label>
               <input class="se-con" id="institution-filter" list="institutionList" type="text">
               <datalist id="institutionList"></datalist>
@@ -142,6 +161,8 @@
       </div>
     </div>
     <script src="js/bundle.js"></script>
+    <script>
+    </script>
   </body>
 
 </html>

@@ -3,7 +3,7 @@ var backupNumber, backupSize;
 const getBackupData = function(paramse) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/backupData");
+    xhr.open("POST", "http://192.168.1.16:3000/backupData");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {
@@ -134,7 +134,7 @@ var pendingTable = document.querySelector("#backup-pending-table");
 const getPendingData = function(params) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://192.168.0.105:3000/backupPending");
+    xhr.open("POST", "http://192.168.1.16:3000/backupPending");
     xhr.setRequestHeader("Content-Type", "multipart/form-data");
     xhr.onreadystatechange = function() {
       if (xhr.readyState !== 4) {

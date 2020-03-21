@@ -5,7 +5,7 @@ userTable.width = "100%";
 var thr, thd, tr, td;
 
 genTableHead()
-postForm("http://192.168.0.105:3000/users").then(users=>{
+postForm("http://192.168.1.16:3000/users").then(users=>{
   try{
     users=JSON.parse(JSON.stringify(users))
     loadData(users);
@@ -119,7 +119,7 @@ function addAction(tr){
     //console.log(e)
     var formData=editTable.getTableData(userTable)
     //console.log(formData)
-    postForm("http://192.168.0.105:3000/users",formData);
+    postForm("http://192.168.1.16:3000/users",formData);
   })
   td.align = "center";
 }

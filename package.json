@@ -16,8 +16,8 @@
   "bin": "cli.js",
   "scripts": {
     "start": "electron .",
-    "build": "browserify static/js/index.js -o static/js/bundle.js",
-    "watch": "watchify static/js/index.js -o static/js/bundle.js",
+    "build": "browserify app/static/js/index.js -o app/static/js/bundle.js",
+    "watch": "watchify app/static/js/index.js -o app/static/js/bundle.js",
     "dev": "electron . --debug",
     "test": "mocha && standard",
     "package": "npm-run-all package:*",
@@ -41,6 +41,7 @@
     "express": "^4.17.1",
     "glob": "^7.1.6",
     "highlight.js": "^9.3.0",
+    "js-cookie": "^2.2.1",
     "json2csv": "^4.5.4",
     "minizlib": "^2.1.0",
     "morgan": "^1.9.1",
