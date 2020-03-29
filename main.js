@@ -7,8 +7,7 @@ if (require.main !== module) {
 
 const path = require('path')
 const glob = require('glob')
-const {app, BrowserWindow} = require('electron')
-const settings = require('electron-settings')
+const {app, BrowserWindow, Menu} = require('electron')
 
 const debug = true///--debug/.test(process.argv[2])
 let isDevelopment = true//false
@@ -38,14 +37,14 @@ function initialize () {
       title: app.name,
       icon:path.join(__dirname, '/assets/app-icon/win/favicon.ico'),
 //       transparent: true,
-//       frame: false,
+      // frame: false,
       webPreferences: {
         nodeIntegration: true
       }  
     }
-
+    Menu.setApplicationMenu(null)
     mainWindow = new BrowserWindow(windowOptions)
-    mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
+    mainWindow.loadURL(path.join('file://', __dirname, '/sections/index.html'))
 
     // Launch fullscreen with DevTools open, usage: npm run debug
     if (debug) {
@@ -63,12 +62,9 @@ function initialize () {
     createWindow()
   })
   app.on('reload', () => {
-    settings.delete('activeSectionButtonId')
   })
 
   app.on('window-all-closed', () => {
-    settings.set('activeSectionButtonId','button-institution-data')
-    settings.delete('activeSectionButtonId')
     if (process.platform !== 'darwin') {
       app.quit()
     }
@@ -107,7 +103,7 @@ function loadFuncs () {
   const files = glob.sync(path.join(__dirname, 'main-process/**/*.js'))
   files.forEach((file) => { require(file) })
 }
-require(path.join(__dirname,'./app/app.js'))
+require(path.join(__dirname,'/core.js'))
 
 initialize()
 
