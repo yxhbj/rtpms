@@ -16,13 +16,13 @@
   "bin": "cli.js",
   "scripts": {
     "start": "electron .",
-    "build": "browserify app/static/js/index.js -o app/static/js/bundle.js",
-    "watch": "watchify app/static/js/index.js -o app/static/js/bundle.js",
+    "build": "browserify ./public/js/gm.js ./public/js/js.cookie.js ./public/js/nav.js -o ./public/js/bundle.js",
+    "watch": "watchify ./public/js/index.js -o ./public/js/bundle.js",
     "dev": "electron . --debug",
     "test": "mocha && standard",
     "package": "npm-run-all package:*",
-    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=assets/app-icon/mac/app.icns --osx-sign.identity='Developer ID Application: GitHub' --extend-info=assets/mac/info.plist",
-    "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --asar --out=out --icon=assets/app-icon/win/favicon.ico",
+    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=out --icon=public/app-icon/mac/app.icns --osx-sign.identity='Developer ID Application: GitHub' --extend-info=assets/mac/info.plist",
+    "package:win": "electron-packager . --overwrite --platform=win32 --arch=x64 --asar --out=out --icon=public/app-icon/win/favicon.ico",
     "package:linux": "electron-packager . --overwrite --platform=linux --arch=x64 --out=out"
   },
   "dependencies": {

@@ -7,10 +7,11 @@ if (require.main !== module) {
 
 const path = require('path')
 const glob = require('glob')
-const {app, BrowserWindow, Menu} = require('electron')
+const {app, BrowserWindow, Menu, Tray} = require('electron')
+const uri='http://localhost:3000'
 
-const debug = true///--debug/.test(process.argv[2])
-let isDevelopment = true//false
+const debug = /--debug/.test(process.argv[2])
+let isDevelopment = false
 
 if(isDevelopment){
   require('electron-reload')(__dirname
@@ -22,6 +23,7 @@ if(isDevelopment){
 if (process.mas) app.setName('RTPMS')
 
 let mainWindow = null
+let tray = null
 
 function initialize () {
   const gotTheLock = requestSingleInstanceLock()
@@ -35,7 +37,7 @@ function initialize () {
       minWidth: 680,
       height: 840,
       title: app.name,
-      icon:path.join(__dirname, '/assets/app-icon/win/favicon.ico'),
+      icon:path.join(__dirname, '/public/app-icon/win/favicon.ico'),
 //       transparent: true,
       // frame: false,
       webPreferences: {
@@ -44,7 +46,7 @@ function initialize () {
     }
     Menu.setApplicationMenu(null)
     mainWindow = new BrowserWindow(windowOptions)
-    mainWindow.loadURL(path.join('file://', __dirname, '/sections/index.html'))
+    mainWindow.loadURL(uri)
 
     // Launch fullscreen with DevTools open, usage: npm run debug
     if (debug) {
@@ -56,7 +58,25 @@ function initialize () {
     mainWindow.on('closed', () => {
       mainWindow = null
     })
+
+    tray = new Tray(path.join(__dirname, '/public/app-icon/win/favicon.ico'))
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            label: '退出',
+           click: function () {
+              settings.delete('activeSectionButtonId')
+             app.quit();
+            }
+        }
+    ])
+    tray.setToolTip('放疗数据管理')
+    tray.setContextMenu(contextMenu)
+    tray.on('click',function(){
+      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.maximize();//mainWindow.show()
+      mainWindow.isVisible() ? mainWindow.setSkipTaskbar(false):mainWindow.setSkipTaskbar(true); 
+    })
   }
+
 
   app.on('ready', () => {
     createWindow()
@@ -100,10 +120,10 @@ function requestSingleInstanceLock () {
 
 // Require each JS file in the main-process dir
 function loadFuncs () {
-  const files = glob.sync(path.join(__dirname, 'main-process/**/*.js'))
+  const files = glob.sync(path.join(__dirname, '/base/**/*.js'))
   files.forEach((file) => { require(file) })
 }
-require(path.join(__dirname,'/core.js'))
+require(path.join(__dirname,'/base.js'))
 
 initialize()
 

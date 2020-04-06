@@ -1,75 +1,76 @@
 ﻿"use strict";
-var fs = require("fs");
 var express = require("express");
 var router = express.Router();
-var utils = require("../public/js/utils");
+var utils = require("../base/utils");
 var sortList = utils.sortList;
 var getSettings = utils.getSettings;
+var app = express();
+var uri=`http://localhost:${app.get('port')}`;
 
 /* GET home page. */
 router.get("/", function(req, res) {
-  res.render("../index", { title: "放疗数据管理" });
+  res.render("../views/index", { title: "放疗数据管理" });
 });
-/* GET home page. */
-router.get("/index", function(req, res) {
-  res.render("index", { title: "放疗数据管理" });
-});
+// /* GET home page. */
+// router.get("/index", function(req, res) {
+//   res.render("index", { title: "放疗数据管理" });
+// });
 
-/* POST institution data list. */
-router.post("/institution", async function(req, res, next) {
-  var settings = await getSettings();
-  try {
-    let reqData = "";
-    req.on("data", function(dataChunk) {
-      reqData += decodeURIComponent(dataChunk);
-    });
-    req.on("end", function() {
-      res.setHeader("Content-Type", "application/json;charset=utf-8");
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      var objPage = {},
-        sortBy = "",
-        sortAscent = true,
-        pageData = [];
-      var arr = reqData.split("&").map(m => {
-        var item = m.split("=");
-        objPage[item[0]] = item[1];
-      });
-      for (var a in objPage) {
-        if (a.substr(0, 5) == "sort_") {
-          sortBy = a;
-          sortAscent = objPage[a] == "ASC" ? true : false;
-        }
-      }
-      fs.readFile(settings.institution.institutionFileName, (err, data) => {
-        if (err) {
-          console.log(err.stack);
-          return;
-        }
-        var resBl = JSON.parse(data.toString()).data;
-        if (sortBy != "") {
-          sortList(
-            resBl,
-            sortBy.replace(/^sort_/, ""),
-            sortAscent,
-            sortedBl => {
-              resBl = sortedBl;
-            }
-          );
-        }
-        res.write(
-          JSON.stringify({
-            data: resBl,
-            totals: resBl.length,
-            settings: settings
-          })
-        );
-        res.end();
-      });
-    });
-  } catch (e) {
-    console.log(e);
-  }
-});
+// /* POST institution data list. */
+// router.post("/institution", async function(req, res, next) {
+//   var settings = await getSettings();
+//   try {
+//     let reqData = "";
+//     req.on("data", function(dataChunk) {
+//       reqData += decodeURIComponent(dataChunk);
+//     });
+//     req.on("end", function() {
+//       res.setHeader("Content-Type", "application/json;charset=utf-8");
+//       res.setHeader("Access-Control-Allow-Origin", "*");
+//       var objPage = {},
+//         sortBy = "",
+//         sortAscent = true,
+//         pageData = [];
+//       var arr = reqData.split("&").map(m => {
+//         var item = m.split("=");
+//         objPage[item[0]] = item[1];
+//       });
+//       for (var a in objPage) {
+//         if (a.substr(0, 5) == "sort_") {
+//           sortBy = a;
+//           sortAscent = objPage[a] == "ASC" ? true : false;
+//         }
+//       }
+//       fs.readFile(settings.institution.institutionFileName, (err, data) => {
+//         if (err) {
+//           console.log(err.stack);
+//           return;
+//         }
+//         var resBl = JSON.parse(data.toString()).data;
+//         if (sortBy != "") {
+//           sortList(
+//             resBl,
+//             sortBy.replace(/^sort_/, ""),
+//             sortAscent,
+//             sortedBl => {
+//               resBl = sortedBl;
+//             }
+//           );
+//         }
+//         res.write(
+//           JSON.stringify({
+//             data: resBl,
+//             totals: resBl.length,
+//             settings: settings
+//           })
+//         );
+//         res.end();
+//       });
+//     });
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
 
 /* POST patient data list. */
 router.post("/patient", async function(req, res, next) {
@@ -82,13 +83,13 @@ router.post("/patient", async function(req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     var objPage = {}
 
-    var arr = reqData.split("&").map(m => {
+    reqData.split("&").forEach(m => {
       var item = m.split("=");
       objPage[item[0]] = item[1];
     });
     console.log(objPage);
     getSettings().then(settings=>{
-      utils.getPgData("patient",objPage,settings.pgConfig).then(data => {
+      utils.getPgData("patient",objPage).then(data => {
         utils.getPgData("server",{"ip":`'${settings.pgConfig.host}'`}).then(servers=>{
           var server=servers.data[0];
           data.settings=settings
@@ -104,8 +105,7 @@ router.post("/patient", async function(req, res, next) {
 });
 
 /* POST plan data list. */
-router.post("/plan", async function(req, res, next) {
-  var settings = await getSettings();
+router.post("/plan", function(req, res, next) {
   try {
     let reqData = "";
     req.on("data", function(dataChunk) {
@@ -114,46 +114,17 @@ router.post("/plan", async function(req, res, next) {
     req.on("end", function() {
       res.setHeader("Content-Type", "application/json;charset=utf-8");
       res.setHeader("Access-Control-Allow-Origin", "*");
-      var objPage = {},
-        sortBy = "",
-        sortAscent = true,
-        pageData = [];
-      var arr = reqData.split("&").map(m => {
+      var objPage = {};
+      reqData.split("&").forEach(m => {
         var item = m.split("=");
         objPage[item[0]] = item[1];
       });
-      for (var a in objPage) {
-        if (a.substr(0, 5) == "sort_") {
-          sortBy = a;
-          sortAscent = objPage[a] == "ASC" ? true : false;
-        }
-      }
       console.log(objPage)
-      fs.readFile(settings.institution.planFileName, (err, data) => {
-        if (err) {
-          console.log(err.stack);
-          return;
-        }
-        var resBl = JSON.parse(data.toString()).data;
-        //筛选patientid
-        resBl = resBl.filter(m =>
-          m.patientid == objPage.patientid ? m : null
-        );
-        //处理排序
-        if (sortBy != "") {
-          sortList(
-            resBl,
-            sortBy.replace(/^sort_/, ""),
-            sortAscent,
-            sortedBl => {
-              resBl = sortedBl;
-            }
-          );
-        }
-        //写入返回客户端的数据
-        res.write(JSON.stringify({ data: resBl, totals: resBl.length }));
+      utils.getPgData("plan",objPage).then(data => {
+        res.write(JSON.stringify(data));
         res.end();
-      });
+      })
+      .catch(err => (err));
     });
   } catch (e) {
     console.log(e);
@@ -173,67 +144,17 @@ router.post("/image", async function(req, res, next) {
     req.on("end", function() {
       res.setHeader("Content-Type", "application/json;charset=utf-8");
       res.setHeader("Access-Control-Allow-Origin", "*");
-      var objPage = {},
-        sortBy = "",
-        sortAscent = true;
-      var arr = reqData.split("&").map(m => {
+      var objPage = {};
+      reqData.split("&").forEach(m => {
         var item = m.split("=");
         objPage[item[0]] = item[1];
       });
-      for (var a in objPage) {
-        if (a.substr(0, 5) == "sort_") {
-          sortBy = a;
-          sortAscent = objPage[a] == "ASC" ? true : false;
-        }
-      }
       console.log(objPage)
-      Promise.all([getSettings(), utils.getServers()])
-        .then(system => {
-          var settings =  system[0];
-          var servers = system[1];
-          var server = servers.filter(s => {
-            if (s.ip == settings.pgConfig.host) {
-              return s;
-            }
-          })[0];
-          var config = {
-            host: server.ip,
-            username: server.loginName,
-            password: server.password
-          };
-          var cmd = "sh /home/p3rtp/listDicom.sh";
-          utils.execCommands(config, [cmd])
-            .then(resp=>{
-              var resBl = JSON.parse('['+resp[0].replace(/"/g,'').replace(/'/g,'"').replace(/\r\n/g,",")+']')
-              let ary2 = []; 
-              for(let val of resBl){ 
-              if(!ary2.some(item=>item.PatientID==val.PatientID&&item.StudyID==val.StudyID)){ 
-              ary2.push(val) 
-              } 
-              } 
-              console.log(ary2)
-              //处理排序
-              if (sortBy != "") {
-                sortList(
-                  ary2,
-                  sortBy.replace(/^sort_/, ""),
-                  sortAscent,
-                  sortedBl => {
-                    ary2 = sortedBl;
-                  }
-                );
-              }
-              //写入返回客户端的数据
-              res.write(JSON.stringify({ data: ary2, totals: ary2.length }));
-              res.end();
-            })
-            .catch(e => e);
-        })
-        .catch(err => err);
-      // //筛选patientid
-      // resBl = resBl.filter(m =>
-      //   m.patientid == objPage.patientid ? m : null
-      // );
+      utils.getPgData("images",objPage).then(data => {
+        res.write(JSON.stringify(data));
+        res.end();
+      })
+      .catch(err => (err));
     });
   } catch (e) {
     console.log(e);
@@ -363,6 +284,7 @@ router.post("/backupData", async function(req, res, next) {
       });
       utils.getServers().then(servers=>{
         var server=servers.filter(s=>s.ip==settings.pgConfig.host)[0];
+        result.backupTotalNumber = result.totals;
         result.backupTotalSize = backupTotalSize.toFixed(2);
         result.defaultSelectedInstitution = settings.institution.defaultInstitution;
         result.backupServerDisk = server.disk;
@@ -377,6 +299,7 @@ router.post("/backupData", async function(req, res, next) {
 /* POST backup pending list. */
 router.post("/backupPending", async function(req, res, next) {
   try {
+    var settings = await getSettings();
     let reqData = "";
     req.on("data", function(dataChunk) {
       reqData += decodeURIComponent(dataChunk);
@@ -423,9 +346,9 @@ router.post("/settings", async function(req, res, next) {
     settings = req.body;
     utils.setSettings(settings);
   }
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Origin", uri);
   res.setHeader("Content-Type", "application/json;charset=utf-8");
-  utils.getInstList(settings.pgConfig).then(instList=>{
+  utils.getInstList().then(instList=>{
     settings.institution.institutions=instList
     res.write(JSON.stringify(settings));
     res.end();

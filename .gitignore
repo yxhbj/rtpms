@@ -1,0 +1,9 @@
+node_modules
+out
+.vscode
+test
+bin
+obj
+irtms.njsproj
+irtms.njsproj.user
+*.log
