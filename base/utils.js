@@ -133,7 +133,7 @@ function defaultSettings() {
       defaultInstitution: 0,
       institutions: [{ id: 0, name: "institution_0" }],
       dicomFolder:"/usr/local/adacnew/DataSets/DICOM",
-      backupedFileName: "database/backuped.json",
+      autoSeg: 1,
       backupPendingFileName: "database/backupPending.json",
       institutionFileName: "database/institution.json",
       patientFileName: "database/patient.json",
@@ -230,7 +230,7 @@ function updateServers() {
         data.map(s => {
           return getSysInfo(s)
             .then(sysInfo => {
-              // s.logs = sysInfo.logs.toString();
+              s.logs = sysInfo.logs.split("\r\n").join(";;");
               s.disk = JSON.stringify(sysInfo.disk);
               return s;
             })
@@ -428,6 +428,7 @@ function readBackupedFileList() {
                 fileSize: (fileInfo[6] / 1024 / 1024).toFixed(0)+"MB"
               };
             });
+            console.log(cmd)
             resolve({
               settings: settings,
               servers: servers,
@@ -751,47 +752,14 @@ async function updateBackupPendingList() {
 async function exportPendingList() {
   var settings = await getSettings();
   var backupSettings = settings.backup;
-  var pendingListFileName = settings.institution.backupPendingFileName,
-    patientFileName = settings.institution.patientFileName;
-  patientData = await readDataFile(patientFileName);
-  pendingData = await readDataFile(pendingListFileName);
-  sortList(patientData.data, "lastmodifiedtimestamp", true, sortedPl => {
-    sortedPl.forEach(p => {
-      if (
-        (p.backupfilename == null || p.backupfilename == undefined) &&
-        (p.planlockdate != null || p.planlockdate != undefined)
-      ) {
-        var matched = pendingData.data.some(d => {
-          if (
-            p.patientid == d.patientid &&
-            p.backupfilename == d.backupfilename &&
-            p.planlockdate == d.planlockdate &&
-            p.planLockTime == d.planLockTime
-          ) {
-            return true;
-          }
-        });
-        if (
-          !matched &&
-          pending.data.length < backupSettings.backupNumberPerDay
-        ) {
-          if (!backupSettings.backupLockedOnly || p.planlockdate != null) {
-            pendingData.data.push(p);
-            pendingData.totals++;
-          }
-        }
-      }
-    });
-    if (pendingData.totals == backupSettings.backupNumberPerDay) {
-      var ws = fs.createWriteStream(pendingListFileName, { start: 0 });
-      var buffer = new Buffer.from(JSON.stringify(pendingData));
-      ws.write(buffer, "utf8", function(err, buffer) {
-        console.log(`Write backup pending list completely finished`);
-      });
-      ws.end("");
-      transferPendingList(pendingData.data);
-    }
-  });
+  var whereStr=" WHERE backupfilename ISNULL "
+  if(settings.backup.backupLockedOnly) whereStr+=" AND planlockdate NOTNULL "
+  var sqlStr=`SELECT * FROM patient ${whereStr} ORDER BY patientid LIMIT ${backupSettings.backupNumberPerDay}`
+  console.log(sqlStr)
+  executePgSql(sqlStr).then(pp=>{
+    console.log(pp)
+    transferPendingList(pp);
+  }).catch(e=>console.log(e));
 }
 
 async function transferPendingList(data) {
@@ -811,8 +779,9 @@ async function transferPendingList(data) {
   execCommands(config, [cmdDel])
     .then()
     .catch(e => e);
-  data.forEach(d => {
-    var backupString = "";
+  var i = 0;
+  function eb() {
+    d = data[i];
     var name = (
       d.lastname.replace(/(\srestored)*$/, "").replace(/\s/g, "-") +
       (d.firstname == undefined ? "" : "_" + d.firstname) +
@@ -820,7 +789,9 @@ async function transferPendingList(data) {
       Array(27).join("_")
     ).slice(0, 27);
     var mrn = (d.medicalrecordnumber + Array(22).join("_")).slice(0, 22);
-    var ldate = d.planlockdate.replace(/\-/g, "").substr(2, 6) + "_";
+    var ldate = d.planlockdate
+      ? d.planlockdate.replace(/\-/g, "").substr(2, 6) + "_"
+      : "000000" + "_";
     var lmodify = d.lastmodifiedtimestamp.replace(/\-/g, "").substr(2, 6);
     var backupString = d.institutionid + " ";
     backupString += d.patientid + " ";
@@ -829,13 +800,23 @@ async function transferPendingList(data) {
     backupString += mrn;
     backupString += ldate;
     backupString += lmodify;
+    // backupString+='.tar';
     console.log(backupString);
-    var cmdAdd = `echo '${backupString}' >>/tmp/.rtms/backuplist`;
+    var cmdAdd = `echo '${backupString}' >/tmp/.rtms/backuplist`;
     execCommands(config, [cmdAdd])
       .then()
       .catch(e => e);
-  });
+    if (i < data.length) {
+      i++;
+    } else {
+      console.log("Backup completed.");
+      return 0;
+    }
+    setTimeout(eb, 120000);
+  }
+  eb();
 }
+
 
 //----------------------------------plan section-------------------------
 
@@ -1049,7 +1030,7 @@ function insertRecord(table,record) {
   const pg = require("pg");
   var pool = new pg.Pool(lpgConfig);
   var _query = `INSERT INTO ${table} (${keys}) VALUES (${values})`;
-  console.log(_query)
+  // console.log(_query)
   return new Promise((resolve, reject) => {
     pool.connect(function(err, client, done) {
       if (err) {

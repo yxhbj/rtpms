@@ -88,7 +88,7 @@
       </div>
     </div>
 
-    <template class="task-template">
+    <!--template class="task-template"-->
       <section id="institution-data-section" class="section js-section u-category-menu">
         <header class="section-header">
           <div class="section-wrapper">
@@ -158,9 +158,9 @@
         <script  type="text/javascript" src="js/prosdb/institution-data.js"></script>
     
       </section>
-    </template>
+    <!--/template>
 
-    <template class="task-template">
+    <template class="task-template"-->
       <section id="backup-data-section" class="section js-section u-category-windows">
         <header class="section-header">
           <div class="section-wrapper">
@@ -217,9 +217,9 @@
         </div>
         <script type="text/javascript" src="js/backup/backup-data.js"></script>
       </section>
-    </template>
+    <!--/template>
 
-    <template class="task-template">
+    <template class="task-template"-->
       <section id="system-settings-section" class="section js-section u-category-system">
         <header class="section-header">
           <div class="section-wrapper">
@@ -240,7 +240,7 @@
                 <button class="data-button" id="process-save-settings">保存参数</button>
                 <button class="data-button" id="process-init-backuplist">数据同步</button>
               </div>
-              <h4 style="margin: 10px">本地数据库</h4>
+              <h4 style="margin: 10px">机构参数</h4>
               <form id="institution-settings-form" style="width: 100%;">
                 <div style="display: flex;width: 100%;border: 1px solid #ccc;">
                   <div style="width: 45%;">
@@ -254,14 +254,15 @@
                       <input class="institution-form-input" type="text" name="dicomFolder">
                     </div>
                     <div class="form-group">
-                      <label class="institution-form-lable" for="nation">待备份数据库</label>
-                      <input class="institution-form-input" type="text" name="backupPendingFileName">
+                      <label class="institution-form-lable" for="nation">自动导入并勾画轮廓？</label>
+                      <input type="checkbox" id="autoSeg">
+                      <input class="institution-form-input" type="hidden" name="autoSeg">
                     </div>
                   </div>
                   <div style="width: 6%;"> 
                   </div>
                   <div style="width: 45%;">
-                    <div class="form-group">
+                    <!--div class="form-group">
                       <label class="institution-form-lable" for="nation">机构数据库</label>
                       <input class="institution-form-input" type="text" name="institutionFileName">
                     </div>
@@ -272,7 +273,7 @@
                     <div class="form-group">
                       <label class="institution-form-lable" for="nation">治疗计划数据库</label>
                       <input class="institution-form-input" type="text" name="planFileName">
-                    </div>
+                    </div-->
                   </div>
                 </div>
               </form>
@@ -281,7 +282,7 @@
                 <div style="display: flex;width: 100%;border: 1px solid #ccc;">
                   <div style="width: 45%;">
                     <div class="form-group">
-                      <label class="database-form-lable" for="jobNumber">TPS服务器</label>
+                      <label class="database-form-lable" for="jobNumber">数据库服务器</label>
                       <input class="database-form-input" type="text" name="host">
                     </div>
                     <div class="form-group">
@@ -383,9 +384,9 @@
         <script type="text/javascript" src="js/system/user.js"></script>
     
       </section>
-    </template>
+    <!--/template>
 
-    <template class="task-template">
+    <template class="task-template"-->
       <section id="system-logs-section" class="section js-section u-category-system">
         <header class="section-header">
           <div class="section-wrapper">
@@ -423,17 +424,17 @@
         </div>
     
       </section>
-    </template>
+    <!--/template-->
     
   </main>
 
-  <template class="task-template">
+  <!--template class="task-template"-->
     <div id="about-modal" class="about modal">
       <div class="about-wrapper">
         <header class="about-header">  
           <!--img class="about-logo" src="assets/img/about.png" srcset="assets/img/about.png 1x, assets/img/about.png 2x" alt="iRT Smart Service"-->      
           <div class="product-name">
-            <p id="product-name">放射治疗计划系统数据全自动备份系统</p>
+            <p id="product-name">放射治疗计划数据智能管理系统</p>
             版本：<label id="product-version">0.0.1</label>
           </div>
         </header>
@@ -450,15 +451,15 @@
         </main>
       </div>
     </div>
-  </template>  
+  <!--/template>  
 
-  <template class="task-template">
+  <template class="task-template"-->
     <div id="login-modal" class="login modal">
       <div class="login-wrapper">
         <header class="login-header">  
           <!--img class="about-logo" src="assets/img/about.png" srcset="assets/img/about.png 1x, assets/img/about.png 2x" alt="iRT Smart Service"-->      
           <div class="product-name">
-            <p id="login-product-name">放射治疗计划系统数据全自动备份系统</p>
+            <p id="login-product-name">放射治疗计划数据智能管理系统</p>
             版本：<label id="login-product-version">0.0.1</label>
           </div>
         </header>
@@ -485,9 +486,9 @@
       </div>
     </div>
     <script type="text/javascript" src="js/login/login.js"></script>
-  </template>  
+  <!--/template-->  
 
-  <script src="js/imports.js"></script>
+  <!--script src="js/imports.js"></script-->
   <script src="js/nav.js"></script>
   <script src="js/func-btns.js"></script>
   

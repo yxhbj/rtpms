@@ -81,7 +81,7 @@ const addAction = function(tableEle,tr,dataType){
     addImg.width="16";
     addImg.style.margin="4px";
     addImg.addEventListener("click",e=>{
-      var newRow=editTable.addRow(tableEle)
+      var newRow=addRow(tableEle)
       newRow.cells[0].innerHTML=newRow.cells[0].value;
       newRow.removeChild(newRow.cells[newRow.cells.length-1]);
       addAction(tableEle,newRow,dataType)

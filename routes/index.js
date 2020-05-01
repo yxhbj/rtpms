@@ -90,6 +90,7 @@ router.post("/patient", async function(req, res, next) {
     console.log(objPage);
     getSettings().then(settings=>{
       utils.getPgData("patient",objPage).then(data => {
+        console.log("patient:",data)
         utils.getPgData("server",{"ip":`'${settings.pgConfig.host}'`}).then(servers=>{
           var server=servers.data[0];
           data.settings=settings
@@ -349,6 +350,8 @@ router.post("/settings", async function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", uri);
   res.setHeader("Content-Type", "application/json;charset=utf-8");
   utils.getInstList().then(instList=>{
+    // console.log(typeof settings.institution)
+    // settings.institution=JSON.parse(settings.institution)?JSON.parse(settings.institution):settings.institution
     settings.institution.institutions=instList
     res.write(JSON.stringify(settings));
     res.end();

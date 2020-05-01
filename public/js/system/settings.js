@@ -50,6 +50,8 @@ function loadSettingData(data) {
     document.querySelector("#autoDeletePatient").checked = false;
     document.getElementById("spaceLimit").setAttribute("hidden", true);
   }
+  document.querySelector("#autoSeg").checked =
+    data.institution.autoSeg == 1 ? true : false;
   document.querySelector("#backupLockedOnly").checked =
     data.backup.backupLockedOnly == 1 ? true : false;
   document.querySelector("#showBN").innerHTML = document.querySelector(
@@ -80,6 +82,13 @@ function setEventListeners() {
     //console.log(data)
     postForm("settings", data);
   };
+  document
+    .querySelector("#autoSeg")
+    .addEventListener("change", function() {
+      document.querySelector('[name="autoSeg"]').value = this.checked
+        ? 1
+        : 0;
+    });
   document.querySelector('[name="max"]').addEventListener("input", function() {
     document.querySelector("#showCn").innerHTML = this.value;
   });
